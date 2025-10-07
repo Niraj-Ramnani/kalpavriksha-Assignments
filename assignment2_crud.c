@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+
 
 #define FILENAME "users.txt"
 #define TEMP_FILENAME "temp.txt"
@@ -74,14 +76,15 @@ void display_users()
 void update_user()
 {
      FILE *file_pointer = fopen(FILENAME, "r");
-     FILE *temp = fopen("TEMP_FILENAME", "w");
+     FILE *temp = fopen(TEMP_FILENAME, "w");
      if (!file_pointer || !temp)
      {
           printf("Error opening file.\n");
           return;
      }
      user u;
-     int id, found = 0;
+     int id;
+     bool found = 0;
      printf("Enter ID to update: ");
      scanf("%d", &id);
      while (fscanf(file_pointer, "%d %s %d", &u.id, u.name, &u.age) == 3)
@@ -99,7 +102,7 @@ void update_user()
      fclose(file_pointer);
      fclose(temp);
      remove(FILENAME);
-     rename("TEMP_FILENAME", FILENAME);
+     rename(TEMP_FILENAME, FILENAME);
      if (found)
           printf("User updated successfully.\n");
      else
@@ -109,14 +112,15 @@ void update_user()
 void delete_user()
 {
      FILE *file_pointer = fopen(FILENAME, "r");
-     FILE *temp = fopen("TEMP_FILENAME", "w");
+     FILE *temp = fopen(TEMP_FILENAME, "w");
      if (!file_pointer || !temp)
      {
           printf("Error opening file.\n");
           return;
      }
      user u;
-     int id, found = 0;
+     int id;
+     bool found = 0;
      printf("Enter ID to delete: ");
      scanf("%d", &id);
      while (fscanf(file_pointer, "%d %s %d", &u.id, u.name, &u.age) == 3)
@@ -135,7 +139,7 @@ void delete_user()
      fclose(file_pointer);
      fclose(temp);
      remove(FILENAME);
-     rename("TEMP_FILENAME", FILENAME);
+     rename(TEMP_FILENAME, FILENAME);
      if (found)
      {
 
