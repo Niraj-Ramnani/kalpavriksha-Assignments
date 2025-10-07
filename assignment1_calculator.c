@@ -10,6 +10,7 @@ void apply_operation();
 void handle_error(const char *msg);
 int build_number(const char *input, int *index);
 int is_operator(char ch);
+void evaluate_expression(const char *input);
 
 int main()
 {
@@ -18,6 +19,12 @@ int main()
     {
         handle_error("Error: Invalid expression.");
     }
+    evaluate_expression(input);
+    return 0;
+}
+
+void evaluate_expression(const char *input)
+{
     for (int i = 0; i < strlen(input); i++)
     {
         if (isspace((unsigned char)input[i]))
@@ -48,7 +55,6 @@ int main()
         printf("%d\n", pop_value());
     else
         handle_error("Error: Invalid expression.");
-    return 0;
 }
 
 int getOperatorPrecedence(char op)
