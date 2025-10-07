@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "stack.h"
+#define DECIMAL_BASE 10
 
 int getOperatorPrecedence(char op);
 void apply_operation();
@@ -89,7 +90,7 @@ int build_number(const char *input, int *index)
     int i = *index;
     while (i < strlen(input) && isdigit((unsigned char)input[i]))
     {
-        val = val * 10 + (input[i] - '0');
+        val = val * DECIMAL_BASE + (input[i] - '0');
         i++;
     }
     *index = i - 1;
