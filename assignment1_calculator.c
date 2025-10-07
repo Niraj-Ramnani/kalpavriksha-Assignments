@@ -7,6 +7,8 @@
 int getOperatorPrecedence(char op);
 void apply_op();
 void handle_error(const char *msg);
+int build_number(const char *input, int *index);
+int is_operator(char ch);
 
 int main()
 {
@@ -21,16 +23,10 @@ int main()
             continue;
         else if (isdigit((unsigned char)input[i]))
         {
-            int val = 0;
-            while (i < strlen(input) && isdigit(input[i]))
-            {
-                val = val * 10 + (input[i] - '0');
-                i++;
-            }
+            int val = build_number(input, &i);
             push_value(val);
-            i--;
         }
-        else if (input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/')
+        else if (is_operator(input[i]))
         {
             while (op_top != -1 && getOperatorPrecedence(top_operator()) >= getOperatorPrecedence(input[i]))
             {
@@ -85,4 +81,22 @@ void apply_op()
         push_value(val1 / val2);
         break;
     }
+}
+
+int build_number(const char *input, int *index)
+{
+    int val = 0;
+    int i = *index;
+    while (i < strlen(input) && isdigit((unsigned char)input[i]))
+    {
+        val = val * 10 + (input[i] - '0');
+        i++;
+    }
+    *index = i - 1;
+    return val;
+}
+
+int is_operator(char ch)
+{
+    return ch == '+' || ch == '-' || ch == '*' || ch == '/';
 }
