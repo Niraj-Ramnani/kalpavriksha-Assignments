@@ -15,35 +15,11 @@ void add_user();
 void display_users();
 void update_user();
 void delete_user();
+void menu();
 
 int main()
 {
-     int choice;
-     do
-     {
-          printf("\n1. Add User\n2. Display Users\n3. Update User\n4. Delete User\n5. Exit\nEnter your choice: ");
-          scanf("%d", &choice);
-          switch (choice)
-          {
-          case 1:
-               add_user();
-               break;
-          case 2:
-               display_users();
-               break;
-          case 3:
-               update_user();
-               break;
-          case 4:
-               delete_user();
-               break;
-          case 5:
-               printf("Exiting \n");
-               break;
-          default:
-               printf("Invalid choice \n");
-          }
-     } while (choice != 5);
+     menu();
      return 0;
 }
 
@@ -145,4 +121,34 @@ void delete_user()
           printf("User deleted successfully.\n");
      else
           printf("User not found.\n");
+}
+
+void menu(){
+         int choice;
+     do
+     {
+          printf("\n1. Add User\n2. Display Users\n3. Update User\n4. Delete User\n5. Exit\nEnter your choice: ");
+          scanf("%d", &choice);
+          switch (choice)
+          {
+          case 1:
+               add_user();
+               break;
+          case 2:
+               display_users();
+               break;
+          case 3:
+               update_user();
+               break;
+          case 4:
+               delete_user();
+               break;
+          case 5:
+               printf("Exiting \n");
+               break;
+          default:
+               printf("Invalid choice \n");
+          }
+     } while (choice != 5);
+
 }
