@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "stack.h"
 
-int precedence(char op);
+int getOperatorPrecedence(char op);
 void apply_op();
 void handle_error(const char *msg);
 
@@ -32,7 +32,7 @@ int main()
         }
         else if (input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/')
         {
-            while (op_top != -1 && precedence(top_operator()) >= precedence(input[i]))
+            while (op_top != -1 && getOperatorPrecedence(top_operator()) >= getOperatorPrecedence(input[i]))
             {
                 apply_op();
             }
@@ -54,7 +54,7 @@ int main()
     return 0;
 }
 
-int precedence(char op)
+int getOperatorPrecedence(char op)
 {
     if (op == '*' || op == '/')
         return 2;
