@@ -5,7 +5,7 @@
 #include "stack.h"
 
 int getOperatorPrecedence(char op);
-void apply_op();
+void apply_operation();
 void handle_error(const char *msg);
 int build_number(const char *input, int *index);
 int is_operator(char ch);
@@ -30,7 +30,7 @@ int main()
         {
             while (op_top != -1 && getOperatorPrecedence(top_operator()) >= getOperatorPrecedence(input[i]))
             {
-                apply_op();
+                apply_operation();
             }
             push_operator(input[i]);
         }
@@ -41,7 +41,7 @@ int main()
     }
     while (op_top != -1)
     {
-        apply_op();
+        apply_operation();
     }
     if (val_top == 0 && op_top == -1)
         printf("%d\n", pop_value());
@@ -59,7 +59,7 @@ int getOperatorPrecedence(char op)
     return 0;
 }
 
-void apply_op()
+void apply_operation()
 {
     int val2 = pop_value();
     int val1 = pop_value();
