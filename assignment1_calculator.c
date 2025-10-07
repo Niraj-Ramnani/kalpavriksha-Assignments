@@ -17,9 +17,9 @@ int main()
     }
     for (int i = 0; i < strlen(input); i++)
     {
-        if (isspace(input[i]))
+        if (isspace((unsigned char)input[i]))
             continue;
-        else if (isdigit(input[i]))
+        else if (isdigit((unsigned char)input[i]))
         {
             int val = 0;
             while (i < strlen(input) && isdigit(input[i]))
