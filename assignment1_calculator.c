@@ -15,6 +15,7 @@ void evaluate_expression(const char *input);
 int main()
 {
     char input[MAX_SIZE];
+    printf("Enter the expression \n");
     if (fgets(input, sizeof(input), stdin) == NULL)
     {
         handle_error("Error: Invalid expression.");

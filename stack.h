@@ -3,6 +3,7 @@
 
 #define MAX_SIZE 100
 
+void handle_error(const char *msg);
 void push_value(int val);
 int pop_value();
 void push_operator(char op);
