@@ -32,8 +32,19 @@ void add_user()
           return;
      }
      user u;
-     printf("Enter ID: ");
-     scanf("%d", &u.id);
+     int max_id = 0;
+     FILE *filepointer_read = fopen(FILENAME, "r");
+     user temp;
+     while (filepointer_read && fscanf(filepointer_read, "%d %s %d", &temp.id, temp.name, &temp.age) == 3)
+     {
+          if (temp.id > max_id)
+               max_id = temp.id;
+     }
+     if (filepointer_read)
+          fclose(filepointer_read);
+     u.id = max_id + 1;
+     printf("Assigned ID: %d\n", u.id);
+     ;
      printf("Enter Name: ");
      scanf("%s", u.name);
      printf("Enter Age: ");
@@ -45,24 +56,24 @@ void add_user()
 
 void display_users()
 {
-     FILE *fp = fopen(FILENAME, "r");
-     if (fp == NULL)
+     FILE *file_pointer = fopen(FILENAME, "r");
+     if (file_pointer == NULL)
      {
           printf("Error opening file.\n");
           return;
      }
      user u;
      printf("ID\tName\tAge\n");
-     while (fscanf(fp, "%d %s %d", &u.id, u.name, &u.age) == 3)
+     while (fscanf(file_pointer, "%d %s %d", &u.id, u.name, &u.age) == 3)
           printf("%d\t%s\t%d\n", u.id, u.name, u.age);
-     fclose(fp);
+     fclose(file_pointer);
 }
 
 void update_user()
 {
-     FILE *fp = fopen(FILENAME, "r");
+     FILE *file_pointer = fopen(FILENAME, "r");
      FILE *temp = fopen("temp.txt", "w");
-     if (!fp || !temp)
+     if (!file_pointer || !temp)
      {
           printf("Error opening file.\n");
           return;
@@ -71,7 +82,7 @@ void update_user()
      int id, found = 0;
      printf("Enter ID to update: ");
      scanf("%d", &id);
-     while (fscanf(fp, "%d %s %d", &u.id, u.name, &u.age) == 3)
+     while (fscanf(file_pointer, "%d %s %d", &u.id, u.name, &u.age) == 3)
      {
           if (u.id == id)
           {
@@ -83,7 +94,7 @@ void update_user()
           }
           fprintf(temp, "%d %s %d\n", u.id, u.name, u.age);
      }
-     fclose(fp);
+     fclose(file_pointer);
      fclose(temp);
      remove(FILENAME);
      rename("temp.txt", FILENAME);
@@ -95,9 +106,9 @@ void update_user()
 
 void delete_user()
 {
-     FILE *fp = fopen(FILENAME, "r");
+     FILE *file_pointer = fopen(FILENAME, "r");
      FILE *temp = fopen("temp.txt", "w");
-     if (!fp || !temp)
+     if (!file_pointer || !temp)
      {
           printf("Error opening file.\n");
           return;
@@ -106,14 +117,14 @@ void delete_user()
      int id, found = 0;
      printf("Enter ID to delete: ");
      scanf("%d", &id);
-     while (fscanf(fp, "%d %s %d", &u.id, u.name, &u.age) == 3)
+     while (fscanf(file_pointer, "%d %s %d", &u.id, u.name, &u.age) == 3)
      {
           if (u.id == id)
                found = 1;
           else
                fprintf(temp, "%d %s %d\n", u.id, u.name, u.age);
      }
-     fclose(fp);
+     fclose(file_pointer);
      fclose(temp);
      remove(FILENAME);
      rename("temp.txt", FILENAME);
