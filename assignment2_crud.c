@@ -25,8 +25,8 @@ int main()
 
 void add_user()
 {
-     FILE *fp = fopen(FILENAME, "a");
-     if (fp == NULL)
+     FILE *file_pointer = fopen(FILENAME, "a");
+     if (file_pointer == NULL)
      {
           printf("Error opening file.\n");
           return;
@@ -38,8 +38,8 @@ void add_user()
      scanf("%s", u.name);
      printf("Enter Age: ");
      scanf("%d", &u.age);
-     fprintf(fp, "%d %s %d\n", u.id, u.name, u.age);
-     fclose(fp);
+     fprintf(file_pointer, "%d %s %d\n", u.id, u.name, u.age);
+     fclose(file_pointer);
      printf("User added successfully\n");
 }
 
@@ -123,8 +123,9 @@ void delete_user()
           printf("User not found.\n");
 }
 
-void menu(){
-         int choice;
+void menu()
+{
+     int choice;
      do
      {
           printf("\n1. Add User\n2. Display Users\n3. Update User\n4. Delete User\n5. Exit\nEnter your choice: ");
@@ -150,5 +151,4 @@ void menu(){
                printf("Invalid choice \n");
           }
      } while (choice != 5);
-
 }
