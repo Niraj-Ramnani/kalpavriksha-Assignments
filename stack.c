@@ -43,5 +43,5 @@ char top_operator()
 void handle_error(const char *msg)
 {
     printf("%s\n", msg);
-    exit(0);
+ 
 }
