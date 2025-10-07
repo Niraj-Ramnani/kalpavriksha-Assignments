@@ -3,6 +3,8 @@
 #include <string.h>
 
 #define FILENAME "users.txt"
+#define TEMP_FILENAME "temp.txt"
+
 
 typedef struct
 {
@@ -72,7 +74,7 @@ void display_users()
 void update_user()
 {
      FILE *file_pointer = fopen(FILENAME, "r");
-     FILE *temp = fopen("temp.txt", "w");
+     FILE *temp = fopen("TEMP_FILENAME", "w");
      if (!file_pointer || !temp)
      {
           printf("Error opening file.\n");
@@ -97,7 +99,7 @@ void update_user()
      fclose(file_pointer);
      fclose(temp);
      remove(FILENAME);
-     rename("temp.txt", FILENAME);
+     rename("TEMP_FILENAME", FILENAME);
      if (found)
           printf("User updated successfully.\n");
      else
@@ -107,7 +109,7 @@ void update_user()
 void delete_user()
 {
      FILE *file_pointer = fopen(FILENAME, "r");
-     FILE *temp = fopen("temp.txt", "w");
+     FILE *temp = fopen("TEMP_FILENAME", "w");
      if (!file_pointer || !temp)
      {
           printf("Error opening file.\n");
@@ -120,18 +122,30 @@ void delete_user()
      while (fscanf(file_pointer, "%d %s %d", &u.id, u.name, &u.age) == 3)
      {
           if (u.id == id)
+          {
+
                found = 1;
+          }
           else
+          {
+
                fprintf(temp, "%d %s %d\n", u.id, u.name, u.age);
+          }
      }
      fclose(file_pointer);
      fclose(temp);
      remove(FILENAME);
-     rename("temp.txt", FILENAME);
+     rename("TEMP_FILENAME", FILENAME);
      if (found)
+     {
+
           printf("User deleted successfully.\n");
+     }
      else
+     {
+
           printf("User not found.\n");
+     }
 }
 
 void menu()
