@@ -3,10 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-
 #define FILENAME "users.txt"
 #define TEMP_FILENAME "temp.txt"
-
 
 typedef struct
 {
@@ -20,6 +18,7 @@ void display_users();
 void update_user();
 void delete_user();
 void menu();
+void input_user_details(user *u);
 
 int main()
 {
@@ -49,10 +48,8 @@ void add_user()
      u.id = max_id + 1;
      printf("Assigned ID: %d\n", u.id);
      ;
-     printf("Enter Name: ");
-     scanf("%s", u.name);
-     printf("Enter Age: ");
-     scanf("%d", &u.age);
+     input_user_details(&u);
+
      fprintf(file_pointer, "%d %s %d\n", u.id, u.name, u.age);
      fclose(file_pointer);
      printf("User added successfully\n");
@@ -91,10 +88,8 @@ void update_user()
      {
           if (u.id == id)
           {
-               printf("Enter new Name: ");
-               scanf("%s", u.name);
-               printf("Enter new Age: ");
-               scanf("%d", &u.age);
+               input_user_details(&u);
+
                found = 1;
           }
           fprintf(temp, "%d %s %d\n", u.id, u.name, u.age);
@@ -150,6 +145,14 @@ void delete_user()
 
           printf("User not found.\n");
      }
+}
+
+void input_user_details(user *u)
+{
+     printf("Enter Name: ");
+     scanf("%s", u->name);
+     printf("Enter Age: ");
+     scanf("%d", &u->age);
 }
 
 void menu()
