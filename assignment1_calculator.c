@@ -6,11 +6,11 @@
 #define DECIMAL_BASE 10
 
 int getOperatorPrecedence(char op);
-void apply_operation();
-void handle_error(const char *msg);
-int build_number(const char *input, int *index);
-int is_operator(char ch);
-void evaluate_expression(const char *input);
+void applyOperation();
+void handleError(const char *msg);
+int buildNumber(const char *input, int *index);
+int isOperator(char ch);
+void evaluateExpression(const char *input);
 
 int main()
 {
@@ -18,13 +18,13 @@ int main()
     printf("Enter the expression \n");
     if (fgets(input, sizeof(input), stdin) == NULL)
     {
-        handle_error("Error: Invalid expression.");
+        handleError("Error: Invalid expression.");
     }
-    evaluate_expression(input);
+    evaluateExpression(input);
     return 0;
 }
 
-void evaluate_expression(const char *input)
+void evaluateExpression(const char *input)
 {
     for (int i = 0; i < strlen(input); i++)
     {
@@ -32,30 +32,30 @@ void evaluate_expression(const char *input)
             continue;
         else if (isdigit((unsigned char)input[i]))
         {
-            int val = build_number(input, &i);
-            push_value(val);
+            int val = buildNumber(input, &i);
+            pushValue(val);
         }
-        else if (is_operator(input[i]))
+        else if (isOperator(input[i]))
         {
-            while (op_top != -1 && getOperatorPrecedence(top_operator()) >= getOperatorPrecedence(input[i]))
+            while (op_top != -1 && getOperatorPrecedence(topOperator()) >= getOperatorPrecedence(input[i]))
             {
-                apply_operation();
+                applyOperation();
             }
-            push_operator(input[i]);
+            pushOperator(input[i]);
         }
         else
         {
-            handle_error("Error: Invalid expression.");
+            handleError("Error: Invalid expression.");
         }
     }
     while (op_top != -1)
     {
-        apply_operation();
+        applyOperation();
     }
     if (val_top == 0 && op_top == -1)
-        printf("%d\n", pop_value());
+        printf("%d\n", popValue());
     else
-        handle_error("Error: Invalid expression.");
+        handleError("Error: Invalid expression.");
 }
 
 int getOperatorPrecedence(char op)
@@ -67,31 +67,31 @@ int getOperatorPrecedence(char op)
     return 0;
 }
 
-void apply_operation()
+void applyOperation()
 {
-    int val2 = pop_value();
-    int val1 = pop_value();
-    char op = pop_operator();
+    int val2 = popValue();
+    int val1 = popValue();
+    char op = popOperator();
     switch (op)
     {
     case '+':
-        push_value(val1 + val2);
+        pushValue(val1 + val2);
         break;
     case '-':
-        push_value(val1 - val2);
+        pushValue(val1 - val2);
         break;
     case '*':
-        push_value(val1 * val2);
+        pushValue(val1 * val2);
         break;
     case '/':
         if (val2 == 0)
-            handle_error("Error: Division by zero.");
-        push_value(val1 / val2);
+            handleError("Error: Division by zero.");
+        pushValue(val1 / val2);
         break;
     }
 }
 
-int build_number(const char *input, int *index)
+int buildNumber(const char *input, int *index)
 {
     int val = 0;
     int i = *index;
@@ -104,7 +104,7 @@ int build_number(const char *input, int *index)
     return val;
 }
 
-int is_operator(char ch)
+int isOperator(char ch)
 {
     return ch == '+' || ch == '-' || ch == '*' || ch == '/';
 }

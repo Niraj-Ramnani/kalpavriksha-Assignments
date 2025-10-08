@@ -7,41 +7,41 @@ int val_top = -1;
 char operator_stack[MAX_SIZE];
 int op_top = -1;
 
-void push_value(int val)
+void pushValue(int val)
 {
     if (val_top >= MAX_SIZE - 1)
-        handle_error("Error: Stack Overflow.");
+        handleError("Error: Stack Overflow.");
     value_stack[++val_top] = val;
 }
 
-int pop_value()
+int popValue()
 {
     if (val_top < 0)
-        handle_error("Error: Invalid expression.");
+        handleError("Error: Invalid expression.");
     return value_stack[val_top--];
 }
 
-void push_operator(char op)
+void pushOperator(char op)
 {
     if (op_top >= MAX_SIZE - 1)
-        handle_error("Error: Stack Overflow.");
+        handleError("Error: Stack Overflow.");
     operator_stack[++op_top] = op;
 }
 
-char pop_operator()
+char popOperator()
 {
     if (op_top < 0)
-        handle_error("Error: Invalid expression.");
+        handleError("Error: Invalid expression.");
     return operator_stack[op_top--];
 }
 
-char top_operator()
+char topOperator()
 {
     return operator_stack[op_top];
 }
 
-void handle_error(const char *msg)
+void handleError(const char *msg)
 {
     printf("%s\n", msg);
-    exit(0);
+   
 }

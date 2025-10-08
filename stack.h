@@ -3,12 +3,12 @@
 
 #define MAX_SIZE 100
 
-void handle_error(const char *msg);
-void push_value(int val);
-int pop_value();
-void push_operator(char op);
-char pop_operator();
-char top_operator();
+void handleError(const char *msg);
+void pushValue(int val);
+int popValue();
+void pushOperator(char op);
+char popOperator();
+char topOperator();
 
 extern int value_stack[MAX_SIZE];
 extern int val_top;
