@@ -36,14 +36,7 @@ int main()
 
 void getStudentData(Student students[], int *n)
 {
-     printf("Enter number of students (1-100): ");
      scanf("%d", n);
-     if (*n < 1 || *n > MAX_STUDENT)
-     {
-          printf("Invalid number of students.\n");
-          *n = 0;
-          return;
-     }
      for (int i = 0; i < *n; i++)
      {
           scanf("%d %s %d %d %d", &students[i].rollNumber, students[i].name,
