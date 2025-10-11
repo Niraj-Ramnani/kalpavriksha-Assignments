@@ -9,7 +9,7 @@ typedef struct
      int marks[3];
 } Student;
 
-void getStudentData(Student students[], int *n);
+void inputStudentDetails(Student students[], int *n);
 void printStudentData(Student students[], int n);
 void sortStudentsByRoll(Student students[], int n);
 int calculateTotal(int subjectMarks[]);
@@ -23,7 +23,7 @@ int main()
      int N;
      Student students[MAX_STUDENT];
 
-     getStudentData(students, &N);
+     inputStudentDetails(students, &N);
      sortStudentsByRoll(students, N);
      printStudentData(students, N);
 
@@ -34,7 +34,7 @@ int main()
      return 0;
 }
 
-void getStudentData(Student students[], int *n)
+void inputStudentDetails(Student students[], int *n)
 {
      scanf("%d", n);
      for (int i = 0; i < *n; i++)
