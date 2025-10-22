@@ -13,7 +13,7 @@ void generateRandomMatrix(int *matrix, int n);
 void displayMatrix(int *matrix, int n);
 void transposeMatrix(int *matrix, int n);
 void reverseMatrixRow(int *matrix, int n);
-void rotateMatrix(int *matrix, int n);
+void rotateMatrix90DegreesClockWise(int *matrix, int n);
 void encodeSmoothedData(int* matrix, int n);
 void decodeSmoothedData(int* matrix, int n);
 void smoothingFilter(int* matrix, int n);
@@ -34,7 +34,7 @@ int main()
     printf("\nOriginal Randomly Generated Matrix:\n");
     displayMatrix(sonarMatrix, matrixSize);
     
-    rotateMatrix(sonarMatrix, matrixSize);
+    rotateMatrix90DegreesClockWise(sonarMatrix, matrixSize);
     printf("Matrix after 90 degree Clockwise Rotation:\n");
     displayMatrix(sonarMatrix, matrixSize);
     
@@ -115,7 +115,7 @@ void reverseMatrixRow(int *matrix, int n) {
     }
 }
 
-void rotateMatrix(int *matrix, int n) {
+void rotateMatrix90DegreesClockWise(int *matrix, int n) {
     transposeMatrix(matrix, n);
     reverseMatrixRow(matrix, n);
 }
