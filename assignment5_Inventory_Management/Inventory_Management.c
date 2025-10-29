@@ -2,8 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #define MAX_NAME_LEN 51
+#define MAX_NAME_LENGTH 50 
+#define MIN_PRODUCTS 1
+#define MAX_PRODUCTS 100
+#define MIN_PRODUCT_ID 1
+#define MAX_PRODUCT_ID 10000
+#define MIN_PRICE 0.0f
+#define MAX_PRICE 100000.0f
+#define MIN_QUANTITY 0
+#define MAX_QUANTITY 1000000
 
 typedef struct {
     int id;
@@ -14,6 +24,7 @@ typedef struct {
 
 void displayMenu();
 void clearInputBuffer();
+bool containsSpecialChars(const char *name);
 void readProductName(char *name_buffer);
 void inputProducts(Product **products, int *count);
 void runMenuLoop(Product **products, int *count);
@@ -30,12 +41,20 @@ int main() {
     int initialCount;
     Product *products = NULL;
 
-    printf("Enter initial number of products: ");
-    if (scanf("%d", &initialCount) != 1) {
-        printf("Invalid input. Exiting.\n");
-        return 1;
+    while (true) {
+        printf("Enter initial number of products: ");
+        if (scanf("%d", &initialCount) != 1) {
+            printf("Invalid input. Please enter a number.\n");
+            clearInputBuffer();
+            continue;
+        }
+        clearInputBuffer();
+
+        if (initialCount >= MIN_PRODUCTS && initialCount <= MAX_PRODUCTS) {
+            break;
+        }
+        printf("Initial product count must be between %d and %d.\n", MIN_PRODUCTS, MAX_PRODUCTS);
     }
-    clearInputBuffer();
 
     products = (Product *)calloc(initialCount, sizeof(Product));
     if (products == NULL) {
@@ -114,37 +133,87 @@ void clearInputBuffer() {
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void readProductName(char *name_buffer) {
-    if (fgets(name_buffer, MAX_NAME_LEN, stdin)) {
-        name_buffer[strcspn(name_buffer, "\n")] = 0;
-    }
-}
-
-int findProductByID(Product *products, int count, int id) {
-    for (int i = 0; i < count; i++) {
-        if (products[i].id == id) {
-            return i;
+bool containsSpecialChars(const char *name) {
+    for (int i = 0; name[i] != '\0'; i++) {
+        if (!isalnum(name[i]) && name[i] != ' ' && name[i] != '-' && name[i] != '\'') {
+            return true;
         }
     }
-    return -1;
+    return false;
+}
+
+void readProductName(char *name_buffer) {
+    while (true) {
+        printf("Product Name: ");
+        if (fgets(name_buffer, MAX_NAME_LEN, stdin)) {
+            name_buffer[strcspn(name_buffer, "\n")] = 0;
+            
+            if (strlen(name_buffer) == 0) {
+                printf("Product name cannot be empty.\n");
+            } else if (strlen(name_buffer) > MAX_NAME_LENGTH) {
+                printf("Product name is too long (Max %d chars).\n", MAX_NAME_LENGTH);
+            } else if (containsSpecialChars(name_buffer)) {
+                printf("Product name contains invalid special characters (Only letters, numbers, space, hyphen, and apostrophe allowed).\n");
+            } else {
+                return;
+            }
+        } else {
+            printf("Error reading input.\n");
+            clearInputBuffer();
+        }
+    }
 }
 
 void inputProducts(Product **products, int *count) {
     for (int i = 0; i < *count; i++) {
         printf("\nEnter details for product %d:\n", i + 1);
-        printf("Product ID: ");
-        scanf("%d", &(*products)[i].id);
-        clearInputBuffer();
         
-        printf("Product Name: ");
+        while (true) {
+            printf("Product ID: ");
+            if (scanf("%d", &(*products)[i].id) != 1) {
+                printf("Invalid ID input.\n");
+                clearInputBuffer();
+                continue;
+            }
+            clearInputBuffer();
+
+            if ((*products)[i].id >= MIN_PRODUCT_ID && (*products)[i].id <= MAX_PRODUCT_ID) {
+                break;
+            }
+            printf("Product ID must be between %d and %d.\n", MIN_PRODUCT_ID, MAX_PRODUCT_ID);
+        }
+
         readProductName((*products)[i].name);
 
-        printf("Product Price: ");
-        scanf("%f", &(*products)[i].price);
+        while (true) {
+            printf("Product Price: ");
+            if (scanf("%f", &(*products)[i].price) != 1) {
+                printf("Invalid Price input.\n");
+                clearInputBuffer();
+                continue;
+            }
+            clearInputBuffer();
+            
+            if ((*products)[i].price >= MIN_PRICE && (*products)[i].price <= MAX_PRICE) {
+                break;
+            }
+            printf("Product Price must be between %.2f and %.2f.\n", MIN_PRICE, MAX_PRICE);
+        }
 
-        printf("Product Quantity: ");
-        scanf("%d", &(*products)[i].quantity);
-        clearInputBuffer();
+        while (true) {
+            printf("Product Quantity: ");
+            if (scanf("%d", &(*products)[i].quantity) != 1) {
+                printf("Invalid Quantity input.\n");
+                clearInputBuffer();
+                continue;
+            }
+            clearInputBuffer();
+            
+            if ((*products)[i].quantity >= MIN_QUANTITY && (*products)[i].quantity <= MAX_QUANTITY) {
+                break;
+            }
+            printf("Product Quantity must be between %d and %d.\n", MIN_QUANTITY, MAX_QUANTITY);
+        }
     }
 }
 
@@ -158,19 +227,60 @@ void addProduct(Product **products, int *count) {
     *products = temp;
 
     printf("\nEnter new product details:\n");
-    printf("Product ID: ");
-    scanf("%d", &(*products)[*count].id);
-    clearInputBuffer();
-    
-    printf("Product Name: ");
+
+    while (true) {
+        printf("Product ID: ");
+        if (scanf("%d", &(*products)[*count].id) != 1) {
+            printf("Invalid ID input.\n");
+            clearInputBuffer();
+            continue;
+        }
+        clearInputBuffer();
+        
+        if ((*products)[*count].id < MIN_PRODUCT_ID || (*products)[*count].id > MAX_PRODUCT_ID) {
+            printf("Product ID must be between %d and %d.\n", MIN_PRODUCT_ID, MAX_PRODUCT_ID);
+            continue;
+        }
+
+        int duplicate_index = findProductByID(*products, *count, (*products)[*count].id);
+        if (duplicate_index != -1) {
+            printf("Error: Product ID %d already exists. Please use a unique ID.\n", (*products)[*count].id);
+            continue;
+        }
+        break;
+    }
+
     readProductName((*products)[*count].name);
 
-    printf("Product Price: ");
-    scanf("%f", &(*products)[*count].price);
-    
-    printf("Product Quantity: ");
-    scanf("%d", &(*products)[*count].quantity);
-    clearInputBuffer();
+    while (true) {
+        printf("Product Price: ");
+        if (scanf("%f", &(*products)[*count].price) != 1) {
+            printf("Invalid Price input.\n");
+            clearInputBuffer();
+            continue;
+        }
+        clearInputBuffer();
+        
+        if ((*products)[*count].price >= MIN_PRICE && (*products)[*count].price <= MAX_PRICE) {
+            break;
+        }
+        printf("Product Price must be between %.2f and %.2f.\n", MIN_PRICE, MAX_PRICE);
+    }
+
+    while (true) {
+        printf("Product Quantity: ");
+        if (scanf("%d", &(*products)[*count].quantity) != 1) {
+            printf("Invalid Quantity input.\n");
+            clearInputBuffer();
+            continue;
+        }
+        clearInputBuffer();
+        
+        if ((*products)[*count].quantity >= MIN_QUANTITY && (*products)[*count].quantity <= MAX_QUANTITY) {
+            break;
+        }
+        printf("Product Quantity must be between %d and %d.\n", MIN_QUANTITY, MAX_QUANTITY);
+    }
 
     (*count)++;
     printf("Product added successfully!\n");
@@ -191,7 +301,11 @@ void viewProducts(Product *products, int count) {
 void updateQuantity(Product *products, int count) {
     int id, newQty, index;
     printf("Enter Product ID to update quantity: ");
-    scanf("%d", &id);
+    if (scanf("%d", &id) != 1) {
+        printf("Invalid ID input.\n");
+        clearInputBuffer();
+        return;
+    }
     clearInputBuffer();
 
     index = findProductByID(products, count, id);
@@ -200,22 +314,32 @@ void updateQuantity(Product *products, int count) {
         return;
     }
 
-    printf("Enter new Quantity: ");
-    if (scanf("%d", &newQty) != 1 || newQty < 0) {
-        printf("Invalid quantity input. Update failed.\n");
+    while (true) {
+        printf("Enter new Quantity: ");
+        if (scanf("%d", &newQty) != 1) {
+            printf("Invalid quantity input.\n");
+            clearInputBuffer();
+            continue;
+        }
         clearInputBuffer();
-        return;
+
+        if (newQty >= MIN_QUANTITY && newQty <= MAX_QUANTITY) {
+            products[index].quantity = newQty;
+            printf("Quantity updated successfully!\n");
+            return;
+        }
+        printf("New Quantity must be between %d and %d.\n", MIN_QUANTITY, MAX_QUANTITY);
     }
-    clearInputBuffer();
-    
-    products[index].quantity = newQty;
-    printf("Quantity updated successfully!\n");
 }
 
 void searchByID(Product *products, int count) {
     int id, index;
     printf("Enter Product ID to search: ");
-    scanf("%d", &id);
+    if (scanf("%d", &id) != 1) {
+        printf("Invalid ID input.\n");
+        clearInputBuffer();
+        return;
+    }
     clearInputBuffer();
 
     index = findProductByID(products, count, id);
@@ -254,10 +378,23 @@ void searchByPriceRange(Product *products, int count) {
     bool found = false;
 
     printf("Enter minimum price: ");
-    scanf("%f", &minPrice);
+    if (scanf("%f", &minPrice) != 1) {
+        printf("Invalid price input.\n");
+        clearInputBuffer();
+        return;
+    }
     printf("Enter maximum price: ");
-    scanf("%f", &maxPrice);
+    if (scanf("%f", &maxPrice) != 1) {
+        printf("Invalid price input.\n");
+        clearInputBuffer();
+        return;
+    }
     clearInputBuffer();
+
+    if (minPrice > maxPrice || minPrice < MIN_PRICE || maxPrice > MAX_PRICE) {
+        printf("Invalid price range or bounds exceeded.\n");
+        return;
+    }
 
     printf("Products in price range:\n");
     for (int i = 0; i < count; i++) {
@@ -276,7 +413,11 @@ void searchByPriceRange(Product *products, int count) {
 void deleteProduct(Product **products, int *count) {
     int id, index;
     printf("Enter Product ID to delete: ");
-    scanf("%d", &id);
+    if (scanf("%d", &id) != 1) {
+        printf("Invalid ID input.\n");
+        clearInputBuffer();
+        return;
+    }
     clearInputBuffer();
 
     index = findProductByID(*products, *count, id);
