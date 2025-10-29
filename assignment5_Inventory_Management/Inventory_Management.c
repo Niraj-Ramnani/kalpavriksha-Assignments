@@ -27,7 +27,7 @@ void clearInputBuffer();
 bool containsSpecialChars(const char *name);
 void readProductName(char *name_buffer);
 void inputProducts(Product **products, int *count);
-void runMenuLoop(Product **products, int *count);
+void renderMenu(Product **products, int *count);
 Product* initializeInventory(int *initialCount);
 void addProduct(Product **products, int *count);
 void viewProducts(Product *products, int count);
@@ -50,7 +50,7 @@ int main() {
         return 1;
     }
     
-    runMenuLoop(&products, &count);
+    renderMenu(&products, &count);
 
     return 0;
 }
@@ -87,7 +87,7 @@ Product* initializeInventory(int *initialCount) {
     return products;
 }
 
-void runMenuLoop(Product **products, int *count) {
+void renderMenu(Product **products, int *count) {
     int choice;
     
     while (true) {
@@ -402,24 +402,39 @@ void searchByPriceRange(Product *products, int count) {
     float minPrice, maxPrice;
     bool found = false;
 
-    printf("Enter minimum price: ");
-    if (scanf("%f", &minPrice) != 1) {
-        printf("Invalid price input.\n");
-        clearInputBuffer();
-        return;
-    }
-    printf("Enter maximum price: ");
-    if (scanf("%f", &maxPrice) != 1) {
-        printf("Invalid price input.\n");
-        clearInputBuffer();
-        return;
+    while (true) {
+        printf("Enter minimum price: ");
+        if (scanf("%f", &minPrice) != 1) {
+            printf("Invalid price input.\n");
+            clearInputBuffer();
+            continue;
+        }
+        if (minPrice < MIN_PRICE) {
+            printf("Minimum price cannot be below %.2f.\n", MIN_PRICE);
+            continue;
+        }
+        break;
     }
     clearInputBuffer();
 
-    if (minPrice > maxPrice || minPrice < MIN_PRICE || maxPrice > MAX_PRICE) {
-        printf("Invalid price range or bounds exceeded.\n");
-        return;
+    while (true) {
+        printf("Enter maximum price: ");
+        if (scanf("%f", &maxPrice) != 1) {
+            printf("Invalid price input.\n");
+            clearInputBuffer();
+            continue;
+        }
+        if (maxPrice > MAX_PRICE) {
+            printf("Maximum price cannot be above %.2f.\n", MAX_PRICE);
+            continue;
+        }
+        if (maxPrice < minPrice) {
+            printf("Maximum price must be greater than or equal to minimum price (%.2f).\n", minPrice);
+            continue;
+        }
+        break;
     }
+    clearInputBuffer();
 
     printf("Products in price range:\n");
     for (int i = 0; i < count; i++) {
@@ -459,7 +474,7 @@ void deleteProduct(Product **products, int *count) {
     Product *temp = (Product *)realloc(*products, (*count) * sizeof(Product));
 
     if (*count > 0 && temp == NULL) {
-         printf("Warning: Memory could not be shrunk, but product was successfully deleted.\n");
+        
     } else {
         *products = temp;
     }
