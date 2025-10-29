@@ -28,6 +28,7 @@ bool containsSpecialChars(const char *name);
 void readProductName(char *name_buffer);
 void inputProducts(Product **products, int *count);
 void runMenuLoop(Product **products, int *count);
+Product* initializeInventory(int *initialCount);
 void addProduct(Product **products, int *count);
 void viewProducts(Product *products, int count);
 void updateQuantity(Product *products, int count);
@@ -36,37 +37,54 @@ void searchByName(Product *products, int count);
 void searchByPriceRange(Product *products, int count);
 void deleteProduct(Product **products, int *count);
 int findProductByID(Product *products, int count, int id);
+void printProductDetails(const Product *p);
+bool isNameMatch(const char *productName, const char *searchKey);
 
 int main() {
-    int initialCount;
+    int count = 0;
+    Product *products = NULL;
+
+    products = initializeInventory(&count);
+    
+    if (products == NULL) {
+        return 1;
+    }
+    
+    runMenuLoop(&products, &count);
+
+    return 0;
+}
+
+Product* initializeInventory(int *initialCount) {
+    int count = 0;
     Product *products = NULL;
 
     while (true) {
         printf("Enter initial number of products: ");
-        if (scanf("%d", &initialCount) != 1) {
+        if (scanf("%d", &count) != 1) {
             printf("Invalid input. Please enter a number.\n");
             clearInputBuffer();
             continue;
         }
         clearInputBuffer();
 
-        if (initialCount >= MIN_PRODUCTS && initialCount <= MAX_PRODUCTS) {
+        if (count >= MIN_PRODUCTS && count <= MAX_PRODUCTS) {
             break;
         }
         printf("Initial product count must be between %d and %d.\n", MIN_PRODUCTS, MAX_PRODUCTS);
     }
+    
+    *initialCount = count;
 
-    products = (Product *)calloc(initialCount, sizeof(Product));
+    products = (Product *)calloc(*initialCount, sizeof(Product));
     if (products == NULL) {
         printf("Memory allocation failed!\n");
-        return 1;
+        return NULL;
     }
 
-    inputProducts(&products, &initialCount);
+    inputProducts(&products, initialCount);
     
-    runMenuLoop(&products, &initialCount);
-
-    return 0;
+    return products;
 }
 
 void runMenuLoop(Product **products, int *count) {
@@ -162,6 +180,15 @@ void readProductName(char *name_buffer) {
             clearInputBuffer();
         }
     }
+}
+
+void printProductDetails(const Product *p) {
+    printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d\n",
+           p->id, p->name, p->price, p->quantity);
+}
+
+bool isNameMatch(const char *productName, const char *searchKey) {
+    return strstr(productName, searchKey) != NULL;
 }
 
 void inputProducts(Product **products, int *count) {
@@ -293,8 +320,7 @@ void viewProducts(Product *products, int count) {
     }
     printf("\n========= PRODUCT LIST =========\n");
     for (int i = 0; i < count; i++) {
-        printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d\n",
-               products[i].id, products[i].name, products[i].price, products[i].quantity);
+        printProductDetails(&products[i]);
     }
 }
 
@@ -348,8 +374,8 @@ void searchByID(Product *products, int count) {
         return;
     }
 
-    printf("Product Found: Product ID: %d | Name: %s | Price: %.2f | Quantity: %d\n",
-               products[index].id, products[index].name, products[index].price, products[index].quantity);
+    printf("Product Found: ");
+    printProductDetails(&products[index]);
 }
 
 void searchByName(Product *products, int count) {
@@ -361,9 +387,8 @@ void searchByName(Product *products, int count) {
 
     printf("Products Found:\n");
     for (int i = 0; i < count; i++) {
-        if (strstr(products[i].name, searchName) != NULL) {
-            printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d\n",
-                   products[i].id, products[i].name, products[i].price, products[i].quantity);
+        if (isNameMatch(products[i].name, searchName)) {
+            printProductDetails(&products[i]);
             found = true;
         }
     }
@@ -399,8 +424,7 @@ void searchByPriceRange(Product *products, int count) {
     printf("Products in price range:\n");
     for (int i = 0; i < count; i++) {
         if (products[i].price >= minPrice && products[i].price <= maxPrice) {
-            printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d\n",
-                   products[i].id, products[i].name, products[i].price, products[i].quantity);
+            printProductDetails(&products[i]);
             found = true;
         }
     }
